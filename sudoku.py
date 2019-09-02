@@ -4,9 +4,9 @@ import os
 import time
 
 def main():
-    difficulty = input(Fore.BLUE + "Choose difficulty (Easy, medium, hard, extreme): ")
+    difficulty = input(Fore.BLUE + "Choose difficulty (easy, medium, hard, extreme): ")
     print(Fore.WHITE)
-    if difficulty == "Easy":
+    if difficulty == "easy":
         dif_num = 32
     elif difficulty == "medium":
         dif_num = 16
@@ -14,26 +14,8 @@ def main():
         dif_num = 8
     else:
         dif_num = 4
-    full_board = [ \
-        [5,3,4,6,7,8,9,1,2], \
-        [6,7,2,1,9,5,3,4,8], \
-        [1,9,8,3,4,2,5,6,7], \
-        [8,5,9,7,6,1,4,2,3], \
-        [4,2,6,8,5,3,7,9,1], \
-        [7,1,3,9,2,4,8,5,6], \
-        [9,6,1,5,3,7,2,8,4], \
-        [2,8,7,4,1,9,6,3,5], \
-        [3,4,5,2,8,6,1,7,9]]
-    board = [ \
-        [5,3,4,6,7,8,9,1,2], \
-        [6,7,2,1,9,5,3,4,8], \
-        [1,9,8,3,4,2,5,6,7], \
-        [8,5,9,7,6,1,4,2,3], \
-        [4,2,6,8,5,3,7,9,1], \
-        [7,1,3,9,2,4,8,5,6], \
-        [9,6,1,5,3,7,2,8,4], \
-        [2,8,7,4,1,9,6,3,5], \
-        [3,4,5,2,8,6,1,7,9]] \
+    full_board = [[5,3,4,6,7,8,9,1,2],[6,7,2,1,9,5,3,4,8],[1,9,8,3,4,2,5,6,7],[8,5,9,7,6,1,4,2,3],[4,2,6,8,5,3,7,9,1],[7,1,3,9,2,4,8,5,6],[9,6,1,5,3,7,2,8,4],[2,8,7,4,1,9,6,3,5],[3,4,5,2,8,6,1,7,9]]
+    board = [[5,3,4,6,7,8,9,1,2],[6,7,2,1,9,5,3,4,8],[1,9,8,3,4,2,5,6,7],[8,5,9,7,6,1,4,2,3],[4,2,6,8,5,3,7,9,1],[7,1,3,9,2,4,8,5,6],[9,6,1,5,3,7,2,8,4],[2,8,7,4,1,9,6,3,5],[3,4,5,2,8,6,1,7,9]]
     squares = 9*9
     empties = squares * 1//dif_num
     for p in sample(range(squares),empties):
@@ -43,12 +25,10 @@ def main():
     
     while True:
         try:
-            user_inp = input("Enter the number of the row, column and the number you want to insert (row column number): ")
-            user_inp = list(user_inp)
-            row = int(user_inp[0])
-            column = int(user_inp[2])
-            num = int(user_inp[4])
-        except ValueError as err:
+            row = int(input("Enter the number of the row: "))
+            column = int(input("Enter the number of the column: "))
+            num = int(input("Enter your number: "))
+        except ValueError:
             print("Invalid input")
             continue
         if board[row-1][column-1] == 0:
@@ -73,7 +53,7 @@ def print_sudoku(tbl):
     print (f"{0}| {1} | {2} | {3} | {4} | {5} | {6} | {7} | {8} | {9} |")
     print("-"*38)
     for i, row in enumerate(tbl):
-        print(("{}".format(i+1)) + ("|" + " {}   {}   {} |"*3).format(*[x if x != 0  else Fore.YELLOW + "#" + Fore.WHITE  for x in row]))
+        print(("{}".format(i+1)) + ("|" + " {}   {}   {} |"*3).format(*[x if x != 0  else Fore.MAGENTA + "#" + Fore.WHITE  for x in row]))
         if i == 8:
             print("-"*38)
         elif i % 3 == 2:
@@ -83,26 +63,29 @@ def print_sudoku(tbl):
 
 # Cheking for remaning holes in the table
 def check_full(board):
+    full = True
     for row in board:
         for element in row:
             if element == 0:
-                return False
-    return True
+                full = False
+    return full
 
 #Determine win condition
 def win_lose (board, full_board):
     win = False
-    board
-    full_board
+    board.sort()
+    full_board.sort()
     if board == full_board:
         win = True
         print(Fore.GREEN + "Congratulations! You solved the puzzle!")
     else:
         print(Fore.RED + "You've got some of the numbers wrong, check them again!")
-        time.sleep(3)
         print(Fore.GREEN + "Right board is: " "\n")
-        time.sleep(2)
         print_sudoku(full_board)
     return win
+
+#Showing the good solution if the sudoku has wrong numbers
+
+
 
 main()
