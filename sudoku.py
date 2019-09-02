@@ -4,9 +4,9 @@ import os
 import time
 
 def main():
-    difficulty = input(Fore.BLUE + "Choose difficulty (easy, medium, hard, extreme): ")
+    difficulty = input(Fore.BLUE + "Choose difficulty (Easy, medium, hard, extreme): ")
     print(Fore.WHITE)
-    if difficulty == "easy":
+    if difficulty == "Easy":
         dif_num = 32
     elif difficulty == "medium":
         dif_num = 16
