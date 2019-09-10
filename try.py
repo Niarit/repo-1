@@ -1,4 +1,4 @@
-from random import sample
+from random import sample, shuffle
 from colorama import Fore, Style
 import os
 import time
@@ -18,13 +18,19 @@ def main():
     side = 9
     row_nums = 1
     board = []
-    while row_nums < side+1:
-        table_line = sample(range(1,side+1),side)
-        board.append(table_line)
-        row_nums += 1
-    full_board = board
-    print(board)
-  
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    
+    number = [range(1,10)]
+
+    
     squares = side*side
     empties = squares * 1//dif_num
     for p in sample(range(squares),empties):
@@ -55,7 +61,52 @@ def main():
                 continue
             break
         continue
-        
+
+#defining square algorithm
+
+#filling the empty grid
+def fill_empty_grid(tbl,number):
+    for e in range(81):
+        row = e // 9
+        column = e % 9
+        if tbl[row][column] == 0:
+            shuffle(number)
+            for value in number:
+                if not value in tbl[row]:
+                    if not value in (tbl[0][column],tbl[1][column],tbl[2][column],tbl[3][column],tbl[4][column],tbl[5][column],tbl[6][column],tbl[7][column],tbl[8][column]):
+                        sqr=[]
+                        if row < 3:
+                            if column < 3:
+                                sqr = [tbl[i][0:3] for i in range(0,3)]
+                            elif column < 6:
+                                sqr = [tbl[i][3:6] for i in range(0,3)]
+                            else:
+                                sqr = [tbl[i][6:9] for i in range(0,3)]
+                        elif row < 6:
+                            if column < 3:
+                                sqr = [tbl[i][0:3] for i in range(3,6)]
+                            elif column < 6:
+                                sqr = [tbl[i][3:6] for i in range(3,6)]
+                            else:
+                                sqr = [tbl[i][6:9] for i in range(3,6)]
+                        else:
+                            if column < 3:
+                                sqr = [tbl[i][0:3] for i in range(6,9)]
+                            elif column < 6:
+                                sqr = [tbl[i][3:6] for i in range(6,9)]
+                            else:
+                                sqr = [tbl[i][6:9] for i in range(6,9)]
+                        if not value in (sqr[0]+sqr[1]+sqr[2]):
+                            tbl[row][column] = value
+                            if check_full(board):
+                                return True
+                            else:
+                                if fill_empty_grid(board,number):
+                                    return True
+            break
+    tbl[row][column] = 0
+
+
 #Formating
 def print_sudoku(tbl):
     os.system('clear')
@@ -71,13 +122,11 @@ def print_sudoku(tbl):
             print(" " "|" + "   +"*8 + "   |")
 
 # Cheking for remaning holes in the table
-def check_full(board):
-    full = True
-    for row in board:
-        for element in row:
-            if element == 0:
-                full = False
-    return full
+def check_full(tbl):
+    for row in range(0,9):
+        for column in range(0,9):
+            if tbl[row][column] == 0:
+                return False
 
 #Determine win condition
 def win_lose (board, full_board):
