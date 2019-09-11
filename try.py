@@ -1,9 +1,10 @@
-from random import sample, shuffle
+from random import sample
 from colorama import Fore, Style
 import os
 import time
 
 def main():
+
     difficulty = input(Fore.BLUE + "Choose difficulty (easy, medium, hard, extreme): ")
     print(Fore.WHITE)
     if difficulty == "easy":
@@ -14,9 +15,11 @@ def main():
         dif_num = 8
     else:
         dif_num = 4
+
+
+#filling the empty grid
+def fill_empty_grid():
     
-    side = 9
-    row_nums = 1
     board = []
     board.append([0,0,0,0,0,0,0,0,0,0])
     board.append([0,0,0,0,0,0,0,0,0,0])
@@ -28,84 +31,39 @@ def main():
     board.append([0,0,0,0,0,0,0,0,0,0])
     board.append([0,0,0,0,0,0,0,0,0,0])
     
-    number = [range(1,10)]
+    full_board = board
 
+    base = 3 
+    side = base*base
+    nums  = sample(range(1,side+1),side)
+    rows = []
+    cols = []
+
+    for g in sample(range(base), base):
+        for r in sample(range(g*base,(g+1)*base), base):
+            rows.append(r)
+
+    for g in sample(range(base), base):
+        for c in sample(range(g*base,(g+1)*base), base):
+            cols.append(c)
+
+    for r in range(side):
+        for c in range(side):
+            board[r][c] = nums[(base * (r % base) + r // base + c) % side]
+
+    board = [[board[r][c] for c in cols] for r in rows]
+    remove_numbers(dif_num,board)
     
-        squares = side*side
-        empties = squares * 1//dif_num
-        for p in sample(range(squares),empties):
-            board[p//side][p%side] = 0
-        numSize = 1
-        print_sudoku(board)
-
-    while True:
-        try:
-            row = int(input("Enter the number of the row: "))
-            column = int(input("Enter the number of the column: "))
-            num = int(input("Enter your number: "))
-        except ValueError:
-            print("Invalid input")
-            continue
-        if board[row-1][column-1] == 0:
-            board[row-1][column-1] = num
-        else:
-            print("You can't touch this!")
-            time.sleep(3)
-        print_sudoku(board)
-        if check_full(board) == True:
-            user_ans = input("Would you like to check your board? (y/n): ")
-            if "y" in user_ans:
-                win_lose(board,full_board)
-            else:
-                print_sudoku(board)
-                continue
-            break
-        continue
-
-#defining square algorithm
-
-#filling the empty grid
-def fill_empty_grid(tbl,number):
-    for e in range(81):
-        row = e // 9
-        column = e % 9
-        if tbl[row][column] == 0:
-            shuffle(number)
-            for value in number:
-                if not value in tbl[row]:
-                    if not value in (tbl[0][column],tbl[1][column],tbl[2][column],tbl[3][column],tbl[4][column],tbl[5][column],tbl[6][column],tbl[7][column],tbl[8][column]):
-                        sqr=[]
-                        if row < 3:
-                            if column < 3:
-                                sqr = [tbl[i][0:3] for i in range(0,3)]
-                            elif column < 6:
-                                sqr = [tbl[i][3:6] for i in range(0,3)]
-                            else:
-                                sqr = [tbl[i][6:9] for i in range(0,3)]
-                        elif row < 6:
-                            if column < 3:
-                                sqr = [tbl[i][0:3] for i in range(3,6)]
-                            elif column < 6:
-                                sqr = [tbl[i][3:6] for i in range(3,6)]
-                            else:
-                                sqr = [tbl[i][6:9] for i in range(3,6)]
-                        else:
-                            if column < 3:
-                                sqr = [tbl[i][0:3] for i in range(6,9)]
-                            elif column < 6:
-                                sqr = [tbl[i][3:6] for i in range(6,9)]
-                            else:
-                                sqr = [tbl[i][6:9] for i in range(6,9)]
-                        if not value in (sqr[0]+sqr[1]+sqr[2]):
-                            tbl[row][column] = value
-                            if check_full(board):
-                                return True
-                            else:
-                                if fill_empty_grid(board,number):
-                                    return True
-            break
-    tbl[row][column] = 0
-
+#removing random numbers
+def remove_numbers(dif_num,board): 
+    base = 3 
+    side = base*base   
+    squares = side*side
+    empties = squares * 1//dif_num
+    for p in sample(range(squares),empties):
+        board[p//side][p%side] = 0
+    numSize = 1
+    print_sudoku(board)
 
 #Formating
 def print_sudoku(tbl):
@@ -127,6 +85,31 @@ def check_full(tbl):
         for column in range(0,9):
             if tbl[row][column] == 0:
                 return False
+
+def control(board):
+    while True:
+        try:
+            row = int(input("Enter the number of the row: "))
+            column = int(input("Enter the number of the column: "))
+            inp_num = int(input("Enter your number: "))
+        except ValueError:
+            print("Invalid input")
+            continue
+        if board[row-1][column-1] == 0:
+            board[row-1][column-1] = inp_num
+        else:
+            print("You can't touch this!")
+            time.sleep(3)
+        print_sudoku(board)
+        if check_full(board) == True:
+            user_ans = input("Would you like to check your board? (y/n): ")
+            if "y" in user_ans:
+                win_lose(board,full_board)
+            else:
+                print_sudoku(board)
+                continue
+            break
+        continue
 
 #Determine win condition
 def win_lose (board, full_board):

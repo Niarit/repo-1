@@ -2,8 +2,10 @@ from random import sample
 from colorama import Fore, Style
 import os
 import time
+import copy
 
 def main():
+    
     difficulty = input(Fore.BLUE + "Choose difficulty (easy, medium, hard, extreme): ")
     print(Fore.WHITE)
     if difficulty == "easy":
@@ -14,8 +16,10 @@ def main():
         dif_num = 8
     else:
         dif_num = 4
-    full_board = [[5,3,4,6,7,8,9,1,2],[6,7,2,1,9,5,3,4,8],[1,9,8,3,4,2,5,6,7],[8,5,9,7,6,1,4,2,3],[4,2,6,8,5,3,7,9,1],[7,1,3,9,2,4,8,5,6],[9,6,1,5,3,7,2,8,4],[2,8,7,4,1,9,6,3,5],[3,4,5,2,8,6,1,7,9]]
-    board = [[5,3,4,6,7,8,9,1,2],[6,7,2,1,9,5,3,4,8],[1,9,8,3,4,2,5,6,7],[8,5,9,7,6,1,4,2,3],[4,2,6,8,5,3,7,9,1],[7,1,3,9,2,4,8,5,6],[9,6,1,5,3,7,2,8,4],[2,8,7,4,1,9,6,3,5],[3,4,5,2,8,6,1,7,9]]
+
+    board = fill_grid()
+    full_board = copy.deepcopy(board)
+    
     squares = 9*9
     empties = squares * 1//dif_num
     for p in sample(range(squares),empties):
@@ -73,19 +77,51 @@ def check_full(board):
 #Determine win condition
 def win_lose (board, full_board):
     win = False
-    board.sort()
-    full_board.sort()
-    if board == full_board:
+    if full_board == board:
         win = True
         print(Fore.GREEN + "Congratulations! You solved the puzzle!")
     else:
+    #Showing the good solution if the sudoku has wrong numbers
         print(Fore.RED + "You've got some of the numbers wrong, check them again!")
         print(Fore.GREEN + "Right board is: " "\n")
+        time.sleep(2)
         print_sudoku(full_board)
     return win
 
-#Showing the good solution if the sudoku has wrong numbers
 
+def fill_grid():
+    board = []
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    board.append([0,0,0,0,0,0,0,0,0,0])
+    rows = []
+    cols = []
+
+    base  = 3 
+    side  = base*base
+    nums  = sample(range(1,side+1),side) # random numbers
+
+    for g in sample(range(base), base):
+        for r in sample(range(g*base,(g+1)*base), base):
+            rows.append(r)
+
+    for g in sample(range(base), base):
+        for c in sample(range(g*base,(g+1)*base), base):
+            cols.append(c)
+
+    for r in range(side):
+        for c in range(side):
+            board[r][c] = nums[(base * (r % base) + r // base + c) % side]
+
+    board = [[board[r][c] for c in cols] for r in rows]
+    for line in board: print(line)
+    return board
 
 
 main()

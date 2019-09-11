@@ -15,7 +15,7 @@ board.append([0,0,0,0,0,0,0,0,0,0])
 rows = []
 cols = []
 
-base  = 3  # Will generate any size of random sudoku board in O(n^2) time
+base  = 3 
 side  = base*base
 nums  = sample(range(1,side+1),side) # random numbers
 
@@ -33,6 +33,12 @@ for r in range(side):
 
 board = [[board[r][c] for c in cols] for r in rows]
 for line in board: print(line)
+
+
+
+
+
+
 
 #rows  = [ r for g in sample(range(base),base) for r in sample(range(g*base,(g+1)*base),base) ] 
 #cols  = [ c for g in sample(range(base),base) for c in sample(range(g*base,(g+1)*base),base) ]            
