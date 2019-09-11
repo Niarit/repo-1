@@ -31,12 +31,12 @@ def main():
     number = [range(1,10)]
 
     
-    squares = side*side
-    empties = squares * 1//dif_num
-    for p in sample(range(squares),empties):
-        board[p//side][p%side] = 0
-    numSize = 1
-    print_sudoku(board)
+        squares = side*side
+        empties = squares * 1//dif_num
+        for p in sample(range(squares),empties):
+            board[p//side][p%side] = 0
+        numSize = 1
+        print_sudoku(board)
 
     while True:
         try:

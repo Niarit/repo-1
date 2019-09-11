@@ -1,75 +1,39 @@
-import random
+from random import sample
 import os
 from colorama import Fore, Style
 
-side = 9
-row_nums = 1
 board = []
-board.append([0,0,0,0,0,0,0,0,0])
-board.append([0,0,0,0,0,0,0,0,0])
-board.append([0,0,0,0,0,0,0,0,0])
-board.append([0,0,0,0,0,0,0,0,0])
-board.append([0,0,0,0,0,0,0,0,0])
-board.append([0,0,0,0,0,0,0,0,0])
-board.append([0,0,0,0,0,0,0,0,0])
-board.append([0,0,0,0,0,0,0,0,0])
-board.append([0,0,0,0,0,0,0,0,0])
+board.append([0,0,0,0,0,0,0,0,0,0])
+board.append([0,0,0,0,0,0,0,0,0,0])
+board.append([0,0,0,0,0,0,0,0,0,0])
+board.append([0,0,0,0,0,0,0,0,0,0])
+board.append([0,0,0,0,0,0,0,0,0,0])
+board.append([0,0,0,0,0,0,0,0,0,0])
+board.append([0,0,0,0,0,0,0,0,0,0])
+board.append([0,0,0,0,0,0,0,0,0,0])
+board.append([0,0,0,0,0,0,0,0,0,0])
+rows = []
+cols = []
 
-numberList=[1,2,3,4,5,6,7,8,9]
+base  = 3  # Will generate any size of random sudoku board in O(n^2) time
+side  = base*base
+nums  = sample(range(1,side+1),side) # random numbers
 
-#A backtracking/recursive function to check all possible combinations of numbers until a solution is found
-def fillGrid(grid):
-  global counter
-  #Find next empty cell
-  for i in range(0,81):
-    row=i//9
-    col=i%9
-    if grid[row][col]==0:
-      random.shuffle(numberList)      
-      for value in numberList:
-        #Check that this value has not already be used on this row
-        if not(value in grid[row]):
-          #Check that this value has not already be used on this column
-          if not value in (grid[0][col],grid[1][col],grid[2][col],grid[3][col],grid[4][col],grid[5][col],grid[6][col],grid[7][col],grid[8][col]):
-            #Identify which of the 9 squares we are working on
-            square=[]
-            if row<3:
-              if col<3:
-                square=[grid[i][0:3] for i in range(0,3)]
-              elif col<6:
-                square=[grid[i][3:6] for i in range(0,3)]
-              else:  
-                square=[grid[i][6:9] for i in range(0,3)]
-            elif row<6:
-              if col<3:
-                square=[grid[i][0:3] for i in range(3,6)]
-              elif col<6:
-                square=[grid[i][3:6] for i in range(3,6)]
-              else:  
-                square=[grid[i][6:9] for i in range(3,6)]
-            else:
-              if col<3:
-                square=[grid[i][0:3] for i in range(6,9)]
-              elif col<6:
-                square=[grid[i][3:6] for i in range(6,9)]
-              else:  
-                square=[grid[i][6:9] for i in range(6,9)]
-            #Check that this value has not already be used on this 3x3 square
-            if not value in (square[0] + square[1] + square[2]):
-              grid[row][col]=value
-              if check_full(board):
-                return True
-              else:
-                if fillGrid(board):
-                  return True
-  
-            
-# Cheking for remaning holes in the table
-def check_full(tbl):
-    for row in range(0,9):
-        for column in range(0,9):
-            if tbl[row][column] == 0:
-                return False
+for g in sample(range(base), base):
+    for r in sample(range(g*base,(g+1)*base), base):
+        rows.append(r)
 
-fillGrid(board)
-print(board)
+for g in sample(range(base), base):
+    for c in sample(range(g*base,(g+1)*base), base):
+        cols.append(c)
+
+for r in range(side):
+    for c in range(side):
+        board[r][c] = nums[(base * (r % base) + r // base + c) % side]
+
+board = [[board[r][c] for c in cols] for r in rows]
+for line in board: print(line)
+
+#rows  = [ r for g in sample(range(base),base) for r in sample(range(g*base,(g+1)*base),base) ] 
+#cols  = [ c for g in sample(range(base),base) for c in sample(range(g*base,(g+1)*base),base) ]            
+#board = [[nums[(base*(r%base)+r//base+c)%side] for c in range(side) ] for r in range(side)]
